@@ -45,8 +45,6 @@ COUNT:	lda #0
 	jsr TEST
 	iny
 	jsr TEST
-	iny
-	jsr TEST
 	inx
 	jsr TEST
 	inx
@@ -54,6 +52,7 @@ COUNT:	lda #0
 	dey
 	jsr TEST
 	dey
+	jsr TEST
 	jsr D
 D:	dex
 TEST:	stx $74
