@@ -5,13 +5,15 @@ and the [dasm](https://www.npmjs.com/package/dasm) assembler
 to assemble 6502 and encode it into a BASIC-wrapped tweet
 for Dominic Pajak's [@bbcmicrobot](https://twitter.com/bbcmicrobot).
 
-Installation:
+## Installation
 
 ~~~~
 npm install dasm node-getopt
 ~~~~
 
-Example usage:
+## Example usage
+
+### Test message
 
 ~~~~
 ./codec.js test.asm
@@ -22,11 +24,15 @@ $3097="HM^cgxx@vGBWOGdzizBzfdIjt~ut~":F.I=3105TO3125:?I=?I*4+(?(2062+I/3)/4^(I M
 ~~~~
 Running this (e.g. in [jsbeeb](https://bbc.godbolt.org/) or the BBCMicroBot [editor](https://editor.8bitkick.cc/)) should print `**OK**` and return to the BASIC prompt.
 
+### Wright-Fisher model
+
 ~~~~
 ./codec.js wright-fisher.asm --exec INIT
 ~~~~
 This is a simulation of a [Wright-Fisher model](https://twitter.com/ianholmes/status/1235079487634599936?s=20).
 Note the use of `--exec` to change the start of execution.
+
+### Diffusion
 
 ~~~~
 ./codec.js diffusion.asm
