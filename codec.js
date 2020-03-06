@@ -4,10 +4,12 @@ const fs = require('fs'),
       Getopt = require('node-getopt'),
       dasm = require("dasm").default
 
+const defaultAddrHex = 'c21'
+
 let getopt = Getopt.create([
     ['s' , 'source=FILE'  , 'specify 6502 source file'],
     ['c' , 'code=TEXT'    , 'specify 6502 from command line'],
-    ['a' , 'address=HEX'  , 'specify start address for compilation in hexadecimal'],
+    ['a' , 'address=HEX'  , 'specify start address for compilation in hexadecimal (defaults to ' + defaultAddrHex + ')'],
     ['x' , 'exec=SYMBOL'  , 'symbol for start of execution (defaults to --address)'],
     ['d' , 'dump'         , 'dump all code, symbols, and data for debugging'],
     ['v' , 'verbose=N'    , 'passed to assembler'],
@@ -23,7 +25,7 @@ if (opt.options.code && source)
   throw new Error ("You can't specify both --code and --source")
 const rawSrc = opt.options.code ? opt.options.code.split(';').map((l)=>"\t"+l+"\n").join('') : fs.readFileSync (source)
 
-const addrHex = opt.options.address || 'c21'
+const addrHex = opt.options.address || defaultAddrHex
 const src = "\tprocessor 6502\n\torg $" + addrHex + "\n" + rawSrc
 if (opt.options.dump)
   console.warn(src)
