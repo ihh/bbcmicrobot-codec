@@ -84,8 +84,13 @@ const lr = l.concat(r);
 const encoded = lr.map(encode);
 
 let encodedStr = encoded.map (x => String.fromCharCode(x)).join('');
-if (opt.options.unspam)
-  encodedStr = encodedStr.replace (/@([a-zA-Z0-9]{1,15}[^a-zA-Z0-9])/g, (_m, g) => '@"+"' + g);
+if (opt.options.unspam) {
+  let old;
+  do {
+    old = encodedStr
+    encodedStr = encodedStr.replace (/@([a-zA-Z0-9]{1,15}[^a-zA-Z0-9])/g, (_m, g) => '@"+"' + g);
+  } while (encodedStr !== old)
+}
 
 const decoded = r.map ((e, i) => ((encode(e)*4 + (encoded[Math.floor(i/3)] >> (2*(i % 3)))) & 0xff));
 
