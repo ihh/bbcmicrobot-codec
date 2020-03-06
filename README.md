@@ -29,7 +29,8 @@ Running this (e.g. in [jsbeeb](https://bbc.godbolt.org/) or the BBCMicroBot [edi
 ~~~~
 ./codec.js wright-fisher.asm --exec INIT
 ~~~~
-This is a simulation of a [Wright-Fisher model](https://twitter.com/ianholmes/status/1235079487634599936?s=20).
+This is a simulation of a [Wright-Fisher model](https://twitter.com/ianholmes/status/1235079487634599936?s=20)
+(or, more precisely, a Moran model: see the [Genetic Drift](https://en.wikipedia.org/wiki/Genetic_drift) page on Wikipedia for more info).
 Note the use of `--exec` to change the start of execution.
 
 The [code](wright-fisher.asm) calls the BBC BASIC RND subroutine at $af87 (documented [here](http://mdfs.net/Info/Comp/Acorn/Source/Basic.htm)), as well as [OSWRCH](http://beebwiki.mdfs.net/OSWRCH) at $ffee.
