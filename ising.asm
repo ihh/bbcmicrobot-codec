@@ -64,4 +64,4 @@ TEST:	stx $74
 	inc $72
 EMPTY:	ldx $74
 	rts
-PROBS:	byte 216,184,156,133 
+PROBS:	byte 216,184,156,133   	; 255*(0.8^N) for N=1..4
