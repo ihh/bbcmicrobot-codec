@@ -2,22 +2,22 @@ MAIN:	jsr $af87		; calls RND subroutine, which puts random bits in 0xD..0x10
 	jsr COUNT
 	ldx $0d
 	ldy $0e
-	jsr XY
-	lda ($70,X)
-	dex
-	ldy $72
-	cmp #33			; if the cell is nonempty (contains a digit), subtract the count from 8
+	jsr XY			; on returning from this subroutine, X is zero
+	lda ($70,X)		; A is the old state of the cell
+	dex			; X is the mask for the new value we'll store in the cell. It's now 0xFF, presuming we're going to set the cell to nonempty
+	ldy $72			; Y is the "nonempty neighbor count"
+	cmp #33			; test if the central cell is nonempty (contains a digit). If we take the branch, the cell is currently empty
 	bcc SPACE
-	inx
-	lda #8
+	inx			; the cell is currently nonempty, so set the mask to 0, because the new state (if we flip it) will be empty
+	lda #8			; subtract the "nonempty neighbor" count from 8 to get the "empty neighbor" count
 	sbc $72
 	tay
 SPACE:	stx $75
-	lda PROBS,Y		; look up the probability of a flip, given this many neighbors
+	lda PROBS,Y		; look up the probability of rejecting a flip, given the number of non-identical neighbors
 	cmp $0f
 	bcs MAIN
 	tya
-	adc #48
+	adc #48			; if we're setting the cell to nonempty, have it show a digit representing nonempty neighbor count (originally for debugging, but kind of fun)
 	and $75
 	ldx #0
 	sta ($70,X)
