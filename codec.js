@@ -12,6 +12,7 @@ let getopt = Getopt.create([
     ['a' , 'address=HEX'  , 'specify start address for compilation in hexadecimal (defaults to ' + defaultAddrHex + ')'],
     ['x' , 'exec=SYMBOL'  , 'symbol for start of execution (defaults to --address)'],
     ['d' , 'dump'         , 'dump all code, symbols, and data for debugging'],
+    ['u' , 'unspam'       , 'bypass spam filter by avoiding Twitter @username tags'],
     ['v' , 'verbose=N'    , 'passed to assembler'],
     ['h' , 'help'         , 'display this help message']
 ])              // create Getopt instance
@@ -81,7 +82,10 @@ const r = data.map ((x, i) =>
 
 const lr = l.concat(r);
 const encoded = lr.map(encode);
-const encodedStr = encoded.map (x => String.fromCharCode(x)).join('');
+
+let encodedStr = encoded.map (x => String.fromCharCode(x)).join('');
+if (opt.options.unspam)
+  encodedStr = encodedStr.replace (/@([a-z])/g, (_m, g) => '@"+"' + g);
 
 const decoded = r.map ((e, i) => ((encode(e)*4 + (encoded[Math.floor(i/3)] >> (2*(i % 3)))) & 0xff));
 

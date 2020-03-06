@@ -38,3 +38,8 @@ Note the use of `--exec` to change the start of execution.
 ./codec.js diffusion.asm
 ~~~~
 This implements a simple diffusion, shown in action [here](https://twitter.com/bbcmicrobot/status/1235417667273519104?s=20).
+
+# Spam filter
+
+Unfortunately some of the generated strings don't work when you give them to the bot, because of things in the code that look like Twitter handles (`@...`), which the bot strips out.
+You can work around this by specifying the `--unspam` option, which breaks these strings with quotes (at a cost of 3 bytes per case).
