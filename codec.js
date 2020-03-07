@@ -81,7 +81,6 @@ let symbols = {}
 asmResult.symbols.forEach ((sym) => { symbols[sym.name] = sym.value })
 asmResult.symbolsRaw.split("\n").slice(1).forEach ((line) => {
   const fields = line.split(/\s+/);
-  console.warn(fields.join('...'))
   if (fields[2] == 'str') {
     symbols[fields[0]] = fields[3].replace(/^"/,'').replace(/"$/,'')
   }
