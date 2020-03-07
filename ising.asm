@@ -21,7 +21,7 @@ SPACE:	stx $75
 	and $75
 	ldx #0
 	sta ($70,X)
-	jmp MAIN
+	beq MAIN
 LOOKUP:	and #15			; points ($70) to cell indexed by (Y,A), clears X, corrupts A, preserves Y
 	asl
 	tax
