@@ -103,6 +103,6 @@ if (decoded.filter ((d, i) => data[i] != d).length) {
   throw new Error ("Test decoding failed");
 }
 
-const basic = '$' + encodedAddr + '="' + encodedStr + '":F.I=' + addr + 'TO' + lastAddr + ':?I=?I*4+(?(' + offsetAddr + '+I/3)/4^(I MOD3)):N.:CA.' + execAddr;
+const basic = '$' + encodedAddr + '="' + encodedStr + '"' + "\nF.I=" + addr + 'TO' + lastAddr + ':?I=?I*4+(?(' + offsetAddr + "+I/3)/4^(I MOD3)):N.\nCA." + execAddr;
 console.log (basic)
 
