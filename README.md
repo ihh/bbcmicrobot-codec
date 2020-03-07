@@ -16,7 +16,7 @@ npm install dasm node-getopt
 ### Test message
 
 ~~~~
-./codec.js test.asm
+./codec.js examples/test.asm
 ~~~~
 This should generate the following
 ~~~~
@@ -32,20 +32,20 @@ You can introduce additional lines of BASIC if you want, e.g. to print text, cle
 ### Wright-Fisher model
 
 ~~~~
-./codec.js wright-fisher.asm --exec INIT
+./codec.js examples/wright-fisher.asm --exec INIT
 ~~~~
 This is a simulation of a [Wright-Fisher model](https://twitter.com/ianholmes/status/1235079487634599936?s=20)
 (or, more precisely, a Moran model: see the [Genetic Drift](https://en.wikipedia.org/wiki/Genetic_drift) page on Wikipedia for more info).
 
 Note the use of `--exec` to change the start of execution.
 
-The [code](wright-fisher.asm) calls the BBC BASIC RND subroutine at $af87 (documented [here](http://mdfs.net/Info/Comp/Acorn/Source/Basic.htm)), as well as [OSWRCH](http://beebwiki.mdfs.net/OSWRCH) at $ffee.
+The [code](examples/wright-fisher.asm) calls the BBC BASIC RND subroutine at $af87 (documented [here](http://mdfs.net/Info/Comp/Acorn/Source/Basic.htm)), as well as [OSWRCH](http://beebwiki.mdfs.net/OSWRCH) at $ffee.
 
 
 ### Diffusion
 
 ~~~~
-./codec.js diffusion.asm
+./codec.js examples/diffusion.asm
 ~~~~
 This implements a simple diffusion, shown in action [here](https://twitter.com/bbcmicrobot/status/1235417667273519104?s=20).
 
