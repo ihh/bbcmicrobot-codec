@@ -8,7 +8,7 @@
 ;; ...or, with probability (UpperNybbleProb/255)...
 ;; Bits (4,5) = new state of source cell, (6,7) = new state of target cell
 
-LOOP:
+RDLOOP:
 	jsr $af87
 	ldx $0d
 	ldy $0e
@@ -19,10 +19,10 @@ LOOP:
 	and #3
 	tay
 	lda DIRS,y
-	sta MOVE
+	sta NBR
 	ldx $0d
 	ldy $0e
-MOVE:	nop
+NBR:	nop
 	jsr GETADDR
 	sty $72
 	sta $73
@@ -57,11 +57,11 @@ LOWER:	pha
 	tay
 	lda CHARS,y
 	sta ($72,x)
-	bcc LOOP
+	bcc RDLOOP
 GETADDR:
 	txa 
 	and #15
-	asl
+	asl			; clears C
 	tax 
 	tya 
 	and #31

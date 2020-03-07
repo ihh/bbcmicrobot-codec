@@ -14,5 +14,5 @@ REACT:	hex 00 54 a8 fc		; reactions for source=empty,    target=(empty,rock,pape
 	hex 04 15 22 55		; reactions for source=rock,     target=(empty,rock,paper,scissors)
 	hex 08 aa 2a 33		; reactions for source=paper,    target=(empty,rock,paper,scissors)
 	hex 0c 11 ff 3f		; reactions for source=scissors, target=(empty,rock,paper,scissors)
-CHARS:	byte " ABC"
+CHARS:	byte " ABC"		; lower 2 bits must be 00, 01, 10, 11
 

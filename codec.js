@@ -13,8 +13,10 @@ let getopt = Getopt.create([
     ['s' , 'source=FILE'  , 'specify 6502 source file'],
     ['c' , 'code=TEXT'    , 'specify 6502 from command line'],
     ['a' , 'address=HEX'  , 'specify start address for compilation in hexadecimal (defaults to ' + defaultAddrHex + ')'],
-    ['x' , 'exec=SYMBOL'  , 'symbol for start of execution (defaults to --address)'],
+    ['x' , 'exec=SYMBOL'  , 'symbol for start of execution (defaults to START, or --address)'],
     ['e' , 'end=SYMBOL'   , 'symbol for end of base64-encoding, e.g. start of plain ASCII data (default is CHARS)'],
+    ['p' , 'prefix=BASIC' , 'BASIC code to run before poking/decoding (default is BASIC_PREFIX symbol)'],
+    ['i' , 'init=BASIC'   , 'BASIC code to run before executing (default is BASIC_INIT symbol)'],
     ['d' , 'dump'         , 'dump all code, symbols, and data for debugging'],
     ['u' , 'unspam'       , 'bypass spam filter by avoiding Twitter @username tags'],
     ['v' , 'verbose=N'    , 'passed to assembler'],
@@ -77,6 +79,13 @@ for (let i = 2; i < Object.keys(asmResult.data).length; ++i)
 
 let symbols = {}
 asmResult.symbols.forEach ((sym) => { symbols[sym.name] = sym.value })
+asmResult.symbolsRaw.split("\n").slice(1).forEach ((line) => {
+  const fields = line.split(/\s+/);
+  console.warn(fields.join('...'))
+  if (fields[2] == 'str') {
+    symbols[fields[0]] = fields[3].replace(/^"/,'').replace(/"$/,'')
+  }
+})
 
 const endAddr = (opt.options.end
                  ? symbols[opt.options.end]
@@ -107,7 +116,11 @@ l.push (lcur);
 const encodedAddr = addr - l.length
 const offsetAddr = encodedAddr - (addr / 3)
 const lastAddr = endAddr - 1
-const execAddr = opt.options.exec ? symbols[opt.options.exec] : addr
+const execAddr = (opt.options.exec
+                  ? symbols[opt.options.exec]
+                  : (symbols.START
+                     ? symbols.START
+                     : addr))
 
 const encode = (x) => ((x == 63 || x == 32) ? x : (x + 64));
 
@@ -140,7 +153,19 @@ if (decoded.filter ((d, i) => allData[i] != d).length) {
 const prefix = "@bbcmicrobot ";
 const maxTweetLen = 280;
 
-const basic = '$' + encodedAddr + '="' + encodedStr + '"' + "\nF.I=" + addr + 'TO' + lastAddr + ':?I=?I*4+(?(' + offsetAddr + "+I/3)/4^(I MOD3)):N.\nCA." + execAddr;
+const basicPrefix = (opt.options.prefix
+                     ? (opt.options.prefix + "\n")
+                     : (symbols.BASIC_PREFIX
+                        ? (symbols.BASIC_PREFIX + "\n")
+                        : ''));
+
+const basicInit = (opt.options.init
+                   ? (opt.options.init + ":")
+                   : (symbols.BASIC_INIT
+                      ? (symbols.BASIC_INIT + ":")
+                      : ''));
+
+const basic = basicPrefix + '$' + encodedAddr + '="' + encodedStr + '"' + "\nF.I=" + addr + 'TO' + lastAddr + ':?I=?I*4+(?(' + offsetAddr + "+I/3)/4^(I MOD3)):N.\n" + basicInit + "CA." + execAddr;
 
 const over = prefix.length + basic.length - maxTweetLen;
 
