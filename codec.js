@@ -103,6 +103,12 @@ if (decoded.filter ((d, i) => data[i] != d).length) {
   throw new Error ("Test decoding failed");
 }
 
-const basic = '$' + encodedAddr + '="' + encodedStr + '"' + "\nF.I=" + addr + 'TO' + lastAddr + ':?I=?I*4+(?(' + offsetAddr + "+I/3)/4^(I MOD3)):N.\nCA." + execAddr;
-console.log (basic)
+const prefix = "@bbcmicrobot ";
+const maxTweetLen = 280;
 
+const basic = '$' + encodedAddr + '="' + encodedStr + '"' + "\nF.I=" + addr + 'TO' + lastAddr + ':?I=?I*4+(?(' + offsetAddr + "+I/3)/4^(I MOD3)):N.\nCA." + execAddr;
+
+const over = prefix.length + basic.length - maxTweetLen;
+
+console.warn ("(" + basic.length + " bytes; " + (over > 0 ? (over + " over") : (-over + " spare")) + ")")
+console.log (basic)
