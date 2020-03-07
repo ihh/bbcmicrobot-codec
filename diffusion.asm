@@ -8,17 +8,16 @@ m:
  ldx $d
  ldy $e
  lda $f
- asl
- bcc notx
+ bpl notx
  dex 
- asl
+ lsr
  bcc done
  inx 
  inx
  bcs done
 notx:
  dey 
- asl
+ lsr
  bcc done
  iny 
  iny 
