@@ -1,3 +1,6 @@
+;; A Lotka-Volterra style reaction-diffusion model with three mutually repressing agents:
+;;  "rock" (A), "paper" (B), and "scissors" (C)
+	
 	INCLUDE "reaction-diffusion.asm"
 
 UpperNybbleProb = 8		; probability of using alternate reaction for a source-target pair, stored in upper nybble
