@@ -63,4 +63,4 @@ TEST:	stx $74			; tests if cell at (Y,X) is nonempty; if so, increments $72. Pre
 	inc $72
 EMPTY:	ldx $74
 	rts
-PROBS:	byte 216,184,156,133   	; 255*(0.8^N) for N=1..4
+PROBS:	byte 239,223,191,127   	; 255*(1-0.8^N) for N=4,3,2,1
