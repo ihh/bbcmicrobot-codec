@@ -1,0 +1,1 @@
+examples/ising.asm
