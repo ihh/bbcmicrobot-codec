@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 
 const fs = require('fs'),
+      path = require('path'),
       Getopt = require('node-getopt'),
-      dasm = require("dasm").default
+      dasmReq = require('dasm'),
+      dasm = dasmReq.default,
+      resolveIncludes = dasmReq.resolveIncludes
 
 const defaultAddrHex = 'c21'
 
@@ -29,16 +32,38 @@ const rawSrc = opt.options.code ? opt.options.code.split(';').map((l)=>"\t"+l+"\
 
 const addrHex = opt.options.address || defaultAddrHex
 const src = "\tprocessor 6502\n\torg $" + addrHex + "\n" + rawSrc
-if (opt.options.dump)
-  console.warn(src)
 
 const addr = eval ('0x' + addrHex)
 if (addr % 3)
   throw new Error ("Start address (" + addr.toString(16) + ") is not a multiple of 3. Try tweaking --address")
 
-let opts = { parameters: '' }
+function resolveIncludesFromFileSystem(baseDir) {
+	return (uri, isBinary) => {
+		const fullUri = path.join(__dirname, baseDir, uri);
+		if (fs.existsSync(fullUri)) {
+			if (isBinary) {
+				return bufferToArray(fs.readFileSync(fullUri));
+			} else {
+				return fs.readFileSync(fullUri, "utf8");
+			}
+		}
+	};
+}
+
+function bufferToArray(b) {
+    const arr = new Uint8Array(b.length);
+    return arr.map((v, i) => b[i]);
+}
+
+const includes = resolveIncludes (src, resolveIncludesFromFileSystem (source ? path.dirname(source) : '.'))
+
+let opts = { parameters: '', includes }
 if (opt.options.verbose)
   opts.parameters += '-v' + opt.options.verbose
+
+if (opt.options.dump)
+  console.warn (JSON.stringify ({ src, opts }))
+
 const asmResult = dasm (src, opts)
 console.warn (asmResult.output.join("\n"))
 
