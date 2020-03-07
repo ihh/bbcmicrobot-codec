@@ -11,6 +11,7 @@ let getopt = Getopt.create([
     ['c' , 'code=TEXT'    , 'specify 6502 from command line'],
     ['a' , 'address=HEX'  , 'specify start address for compilation in hexadecimal (defaults to ' + defaultAddrHex + ')'],
     ['x' , 'exec=SYMBOL'  , 'symbol for start of execution (defaults to --address)'],
+    ['e' , 'end=SYMBOL'   , 'symbol for end of base64-encoding, e.g. start of plain ASCII data (default is CHARS)'],
     ['d' , 'dump'         , 'dump all code, symbols, and data for debugging'],
     ['u' , 'unspam'       , 'bypass spam filter by avoiding Twitter @username tags'],
     ['v' , 'verbose=N'    , 'passed to assembler'],
@@ -45,22 +46,30 @@ const errors = asmResult.list.filter ((l) => l.errorMessage).map ((l) => l.error
 if (errors.length)
   console.error (errors.join("\n"))
 
-let data = []
+let allData = []
 for (let i = 2; i < Object.keys(asmResult.data).length; ++i)
-  data.push (asmResult.data[i])
+  allData.push (asmResult.data[i])
 
 let symbols = {}
 asmResult.symbols.forEach ((sym) => { symbols[sym.name] = sym.value })
 
+const endAddr = (opt.options.end
+                 ? symbols[opt.options.end]
+                 : (symbols.CHARS
+                    ? symbols.CHARS
+                    : (addr + allData.length)))
+const binaryLen = endAddr - addr
+const ascData = allData.slice (binaryLen), binData = allData.slice (0, binaryLen)
+
 const toHex = (n) => { let h = n.toString(16); while (h.length < 2) h = '0' + h; return h };
 if (opt.options.dump) {
 //  console.warn ("Result: " + JSON.stringify(asmResult))
-  console.warn ("Data: " + data.map(toHex).join(' '))
+  console.warn ("Data: " + allData.map(toHex).join(' '))
   console.warn ("Symbols: " + JSON.stringify (symbols))
 }
 
 let l = [], lcur = 0
-data.forEach ((x, i) => {
+binData.forEach ((x, i) => {
   const b = 2 * (i % 3);
   lcur += (x & 3) << b;
   if (b == 4) {
@@ -72,16 +81,16 @@ l.push (lcur);
 
 const encodedAddr = addr - l.length
 const offsetAddr = encodedAddr - (addr / 3)
-const lastAddr = addr + data.length - 1
+const lastAddr = endAddr - 1
 const execAddr = opt.options.exec ? symbols[opt.options.exec] : addr
 
 const encode = (x) => ((x == 63 || x == 32) ? x : (x + 64));
 
-const r = data.map ((x, i) =>
-		    (((x - (encode(l[Math.floor(i/3)]) >> (2*(i % 3)))) & 0xff) >> 2));
+const r = binData.map ((x, i) =>
+		       (((x - (encode(l[Math.floor(i/3)]) >> (2*(i % 3)))) & 0xff) >> 2));
 
 const lr = l.concat(r);
-const encoded = lr.map(encode);
+const encoded = lr.map(encode).concat(ascData);
 
 let encodedStr = encoded.map (x => String.fromCharCode(x)).join('');
 if (opt.options.unspam) {
@@ -92,9 +101,9 @@ if (opt.options.unspam) {
   } while (encodedStr !== old)
 }
 
-const decoded = r.map ((e, i) => ((encode(e)*4 + (encoded[Math.floor(i/3)] >> (2*(i % 3)))) & 0xff));
+const decoded = r.map ((e, i) => ((encode(e)*4 + (encoded[Math.floor(i/3)] >> (2*(i % 3)))) & 0xff)).concat (ascData);
 
-if (decoded.filter ((d, i) => data[i] != d).length) {
+if (decoded.filter ((d, i) => allData[i] != d).length) {
   console.warn ("        l: " + JSON.stringify(l));
   console.warn ("l.encoded: " + JSON.stringify(l.map(encode)));
   console.warn ("        r: " + JSON.stringify(r));

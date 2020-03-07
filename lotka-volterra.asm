@@ -1,29 +1,20 @@
-UPPER_NYBBLE_PROB = 32		; probability of using upper nybble
+UpperNybbleProb = 8
 	
 LOOP:
 	jsr $af87
-	ldx $d
-	ldy $e
+	ldx $0d
+	ldy $0e
 	jsr GETADDR
 	sty $70
 	sta $71
-	ldx $d
-	ldy $e
-	lda $f
-	bpl NOTX
-	dex 
-	lsr
-	bcc DONE
-	inx 
-	inx
-	bcs DONE
-NOTX:
-	dey 
-	lsr
-	bcc DONE
-	iny 
-	iny 
-DONE:
+	lda $0f
+	and #3
+	tay
+	lda DIRS,y
+	sta MOVE
+	ldx $0d
+	ldy $0e
+MOVE:	nop
 	jsr GETADDR
 	sty $72
 	sta $73
@@ -33,31 +24,32 @@ DONE:
 	php
 	lsr
 	lda ($70,x)
+	and #3
 	rol
 	plp
 	rol
 	tay
 	lda REACT,y
-	ldy $10
-	cpy #UPPER_NYBBLE_PROB
-	bcs LOWER
+	ldy #UpperNybbleProb
+	cpy $10
+	bcc LOWER
 	lsr
 	lsr
 	lsr
 	lsr
 LOWER:	pha
 	and #3
-	beq SPC1
-	ora #64
-SPC1:	sta ($70,x)
+	tay
+	lda CHARS,y
+	sta ($70,x)
 	pla
 	and #12
-	beq SPC2
 	lsr
 	lsr
-	ora #64
-SPC2:	sta ($72,x)
-	bpl LOOP
+	tay
+	lda CHARS,y
+	sta ($72,x)
+	bcc LOOP
 GETADDR:
 	txa 
 	and #15
@@ -70,11 +62,16 @@ GETADDR:
 	lda $c3b5,x
 	adc #$7c
 	rts
+DIRS:	dex
+	inx
+	dey
+	iny
 	;; 0 = empty, 1 = rock, 2 = paper, 3 = scissors
 	;; Bits (0,1) = new state of source cell, (2,3) = new state of target cell
 	;; ...or, with probability (UPPER_NYBBLE_PROB/256)...
 	;; Bits (4,5) = new state of source cell, (6,7) = new state of target cell
 REACT:	hex 00 54 a8 fc		; reactions for source=empty,    target=(empty,rock,paper,scissors)
-	hex 04 55 22 55		; reactions for source=rock,     target=(empty,rock,paper,scissors)
-	hex 08 aa aa 33		; reactions for source=paper,    target=(empty,rock,paper,scissors)
-	hex 0c 11 ff ff		; reactions for source=scissors, target=(empty,rock,paper,scissors)
+	hex 04 15 22 55		; reactions for source=rock,     target=(empty,rock,paper,scissors)
+	hex 08 aa 2a 33		; reactions for source=paper,    target=(empty,rock,paper,scissors)
+	hex 0c 11 ff 3f		; reactions for source=scissors, target=(empty,rock,paper,scissors)
+CHARS:	byte " ABC"
