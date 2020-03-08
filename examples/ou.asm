@@ -2,16 +2,14 @@
 
 BASIC_INIT = "MO.0"
 	
-	lda #0
-	sta $70			; X
-	sta $71			; Y
 ORIG:	lda #25
 	jsr $ffee
 	lda #4
 	jsr $ffee
 	lda #0
+	sta $70			; X
+	sta $71			; Y
 	jsr XCOORD
-	lda $71
 	jsr YCOORD
 LOOP:	jsr $af87
 	lda #25
