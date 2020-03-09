@@ -1,20 +1,15 @@
 ;; Ornstein-Uhlenbeck process
 
-BASIC_INIT = "MO.0:V.23,1;0;0;0;"
+BASIC_INIT = "MO.0"
 
 START:	lda #0
 	sta $71			; Y
-ORIG:	lda #12
+ORIG:	ldx #222
+PRINT:	lda STR-222,x
 	jsr $ffee
-	lda #25
-	jsr $ffee
-	lda #4
-	jsr $ffee
-	lda #0
-	sta $70			; X
-	jsr XCOORD
-	lda $71
-	jsr YCOORD
+	inx
+	bne PRINT
+	stx $70			; X
 LOOP:	jsr $af87
 	lda #25
 	jsr $ffee
@@ -63,3 +58,6 @@ POS:	jsr MUL4
 	clc
 	adc #2
 	jmp $ffee
+STR:	byte 23,1,0,0,0,0,0,0,0,0,12,25,4,0,0,0,2
+CHARS:	byte "Acorn Stock Price"
+END:	
