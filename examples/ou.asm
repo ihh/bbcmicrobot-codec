@@ -1,6 +1,6 @@
 ;; Ornstein-Uhlenbeck process
 
-BASIC_INIT = "MO.0"
+BASIC_INIT = "MO.0:V.23,1;0;0;0;"
 
 START:	lda #0
 	sta $71			; Y
