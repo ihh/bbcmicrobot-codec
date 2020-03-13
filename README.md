@@ -8,7 +8,7 @@ for Dominic Pajak's [@bbcmicrobot](https://twitter.com/bbcmicrobot).
 ## Installation
 
 ~~~~
-npm install dasm node-getopt
+npm install
 ~~~~
 
 ## Example usage

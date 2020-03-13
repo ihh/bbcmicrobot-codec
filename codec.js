@@ -3,6 +3,7 @@
 const fs = require('fs'),
       path = require('path'),
       Getopt = require('node-getopt'),
+      base2048 = require('base2048'),
       dasmReq = require('dasm'),
       dasm = dasmReq.default,
       resolveIncludes = dasmReq.resolveIncludes
@@ -19,6 +20,7 @@ let getopt = Getopt.create([
     ['i' , 'init=BASIC'   , 'BASIC code to run before executing (default is BASIC_INIT symbol)'],
     ['d' , 'dump'         , 'dump all code, symbols, and data for debugging'],
     ['u' , 'unspam'       , 'bypass spam filter by avoiding Twitter @username tags'],
+    ['b' , 'base2048'     , 'base2048-encode the Tweet'],
     ['v' , 'verbose=N'    , 'passed to assembler'],
     ['h' , 'help'         , 'display this help message']
 ])              // create Getopt instance
@@ -166,7 +168,11 @@ const basicInit = (opt.options.init
 
 const basic = basicPrefix + '$' + encodedAddr + '="' + encodedStr + '"' + "\nF.I=" + addr + 'TO' + lastAddr + ':?I=?I*4+(?(' + offsetAddr + "+I/3)/4^(I MOD3)):N.\n" + basicInit + "CA." + execAddr;
 
-const over = prefix.length + basic.length - maxTweetLen;
-
-console.warn ("(" + basic.length + " bytes; " + (over > 0 ? (over + " over") : (-over + " spare")) + ")")
-console.log (basic)
+if (opt.options.base2048) {
+  const b2048 = base2048.encode (basic.split('').map((c)=>c.charCodeAt(0)))
+  console.warn ("(" + basic.length + " bytes, " + b2048.length + " encoded)")
+  console.log (b2048)
+} else {
+  console.warn ("(" + basic.length + " bytes)")
+  console.log (basic)
+}
