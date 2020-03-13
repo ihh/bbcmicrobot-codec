@@ -151,7 +151,7 @@ if (decoded.filter ((d, i) => allData[i] != d).length) {
   throw new Error ("Test decoding failed");
 }
 
-const prefix = "@bbcmicrobot ";
+// const prefix = "@bbcmicrobot ";
 const maxTweetLen = 280;
 
 const basicPrefix = (opt.options.prefix
@@ -170,6 +170,7 @@ const basic = basicPrefix + '$' + encodedAddr + '="' + encodedStr + '"' + "\nF.I
 
 if (opt.options.base2048) {
   const b2048 = base2048.encode (basic.split('').map((c)=>c.charCodeAt(0)))
+  console.warn (basic)
   console.warn ("(" + basic.length + " bytes, " + b2048.length + " encoded)")
   console.log (b2048)
 } else {
