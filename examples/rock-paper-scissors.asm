@@ -1,9 +1,13 @@
 ;; A Lotka-Volterra style reaction-diffusion model with three mutually repressing agents:
-;;  "rock" (A), "paper" (B), and "scissors" (C)
-	
-	INCLUDE "reaction-diffusion.asm"
+;;  "rock" (R), "paper" (P), and "scissors" (S)
 
-UpperNybbleProb = 8		; probability of using alternate reaction for a source-target pair, stored in upper nybble
+BASIC_INIT = "CLS"
+INIT_COUNT = 100
+	
+START:	
+	INCLUDE "cursor.asm"
+	INCLUDE "rndinit.asm"
+	INCLUDE "reaction-diffusion.asm"
 
 ;; 0 = empty, 1 = rock, 2 = paper, 3 = scissors
 ;; Bits (0,1) = new state of source cell, (2,3) = new state of target cell
@@ -14,5 +18,6 @@ REACT:	hex 00 54 a8 fc		; reactions for source=empty,    target=(empty,rock,pape
 	hex 04 15 22 55		; reactions for source=rock,     target=(empty,rock,paper,scissors)
 	hex 08 aa 2a 33		; reactions for source=paper,    target=(empty,rock,paper,scissors)
 	hex 0c 11 ff 3f		; reactions for source=scissors, target=(empty,rock,paper,scissors)
-CHARS:	byte " ABC"		; lower 2 bits must be 00, 01, 10, 11
+RATE:	hex 08 08 08 08		; rates for alternate (upper-nybble) reactions for source=(empty,rock,paper,scissors)
+CHARS:	byte " RPS"		; lower 2 bits must be 00, 01, 10, 11
 

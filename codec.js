@@ -166,7 +166,12 @@ const basicInit = (opt.options.init
                       ? (symbols.BASIC_INIT + ":")
                       : ''));
 
-const basic = basicPrefix + '$' + encodedAddr + '="' + encodedStr + '"' + "\nF.I=" + addr + 'TO' + lastAddr + ':?I=?I*4+(?(' + offsetAddr + "+I/3)/4^(I MOD3)):N.\n" + basicInit + "CA." + execAddr;
+const encodedChunkLen = 238 - ('$' + encodedAddr + '=""\n').length;
+const encodedChunks = [];
+for (let offset = 0; offset < encodedStr.length; offset += encodedChunkLen)
+  encodedChunks.push (encodedStr.substr (offset, encodedChunkLen));
+
+const basic = basicPrefix + encodedChunks.map ((chunk, n) => '$' + (encodedAddr + n * encodedChunkLen) + '="' + chunk + '"' + "\n").join('') + "F.I=" + addr + 'TO' + lastAddr + ':?I=?I*4+(?(' + offsetAddr + "+I/3)/4^(I MOD3)):N.\n" + basicInit + "CA." + execAddr;
 
 if (opt.options.base2048) {
   const b2048 = base2048.encode (basic.split('').map((c)=>c.charCodeAt(0)))
