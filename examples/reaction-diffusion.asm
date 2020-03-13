@@ -85,9 +85,10 @@ GETADDR:
 	tya 
 	and #31
 	adc $c3b6,x
+	adc #$a4		; offset (4,4): 40*4 + 4
 	tay 
 	lda $c3b5,x
-	adc #$7c
+	adc #$7c		; $7c00 is start of screen memory
 	rts
 DIRS:	dex
 	inx

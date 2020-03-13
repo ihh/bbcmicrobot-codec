@@ -5,13 +5,19 @@ BASIC_INIT = "CLS"
 INIT_COUNT = 100
 	
 START:	
+	INCLUDE "cls.asm"
 	INCLUDE "cursor.asm"
 	INCLUDE "rndinit.asm"
 	INCLUDE "reaction-diffusion.asm"
 
+VDU_INIT_LEN = 3
+VDU_INIT:
+	byte 129,157,135
+	
+	
 ;; 0 = empty, 1 = rock, 2 = paper, 3 = scissors
 ;; Bits (0,1) = new state of source cell, (2,3) = new state of target cell
-;; ...or, with probability (UpperNybbleProb/256)...
+;; ...or, with probability RATE[source]...
 ;; Bits (4,5) = new state of source cell, (6,7) = new state of target cell
 
 REACT:	hex 00 54 a8 fc		; reactions for source=empty,    target=(empty,rock,paper,scissors)
