@@ -1,6 +1,6 @@
-;; Delay loop which zeroes the accumulator
+;; Delay loop
 	
-DELAY:
+DELAY_LOOP:
 	lda $295
-	cmp #11
-	bcc DELAY
+	cmp #DELAY
+	bcc DELAY_LOOP

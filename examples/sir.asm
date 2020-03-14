@@ -3,6 +3,8 @@
 INIT_TYPE = 3
 INIT_COUNT = 0			; i.e. 256
 
+DELAY = 0
+	
 START:	
 	INCLUDE "cursor.asm"
 	INCLUDE "cls.asm"
@@ -42,8 +44,8 @@ VDU_INIT:
 ;; f  S   S
 
 REACT:	hex 00 11 22 33		; reactions for source=empty,       target=(empty,infected,recovered,susceptible)
-	hex 44 55 99 55		; reactions for source=infected,    target=(empty,infected,recovered,susceptible)
+	hex 84 55 99 55		; reactions for source=infected,    target=(empty,infected,recovered,susceptible)
 	hex 88 99 aa bb		; reactions for source=recovered,   target=(empty,infected,recovered,susceptible)
 	hex cc 55 ee ff		; reactions for source=susceptible, target=(empty,infected,recovered,susceptible)
-RATE:	hex 01 01 01 01		; rates for alternate (upper-nybble) reactions for source=(empty,infected,recovered,susceptible)
+RATE:	hex 10 10 10 10		; rates for alternate (upper-nybble) reactions for source=(empty,infected,recovered,susceptible)
 CHARS:	byte " IRS"		; lower 2 bits must be 00, 01, 10, 11
