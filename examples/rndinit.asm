@@ -1,7 +1,7 @@
 ;; Random initialization for reaction-diffusion.asm
 
 ;; Including file must define the following:
-;; INITCOUNT - number of initial random characters
+;; INIT_COUNT - number of initial random characters
 
 	lda #INIT_COUNT
 	sta $74

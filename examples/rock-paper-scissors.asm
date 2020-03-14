@@ -1,9 +1,8 @@
 ;; A Lotka-Volterra style reaction-diffusion model with three mutually repressing agents:
 ;;  "rock" (R), "paper" (P), and "scissors" (S)
 
-BASIC_INIT = "CLS"
 INIT_COUNT = 100
-	
+
 START:	
 	INCLUDE "cls.asm"
 	INCLUDE "cursor.asm"
